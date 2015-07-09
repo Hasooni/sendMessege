@@ -26,3 +26,25 @@
 *.exe
 *.out
 *.app
+ 
+ Message::Ptr Api::sendMessage(int32_t chatId, const string& text, bool disableWebPagePreview, int32_t replyToMessageId, const GenericReply::Ptr& replyMarkup) const {
+-    vector<Http::Argument> args;
+-    args.push_back(Http::Argument("chat_id", chatId));
+-    args.push_back(Http::Argument("text", text));
++    vector<HttpReqArg> args;
++    args.push_back(HttpReqArg("chat_id", chatId));
++    args.push_back(HttpReqArg("text", text));
+     if (disableWebPagePreview) {
+-        args.push_back(Http::Argument("disable_web_page_preview", disableWebPagePreview));
++        args.push_back(HttpReqArg("disable_web_page_preview", disableWebPagePreview));
+     }
+     if (replyToMessageId) {
+-        args.push_back(Http::Argument("reply_to_message_id", replyToMessageId));
++        args.push_back(HttpReqArg("reply_to_message_id", replyToMessageId));
+     }
+     if (replyMarkup) {
+-        args.push_back(Http::Argument("reply_markup", _bot->getParser().parseGenericReply(replyMarkup)));
++        args.push_back(HttpReqArg("reply_markup", TgTypeParser::getInstance().parseGenericReply(replyMarkup)));
+     }
+-    return _bot->getParser().parseMessage(sendRequest("sendMessage", args).find("result")->second);
++    return TgTypeParser::getInstance().parseMessage(sendRequest("sendMessage", args).find("result")->second);
